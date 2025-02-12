@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: marketplace
+  namespace: marketplace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: marketplace
+  template:
+    metadata:
+      labels:
+        app: marketplace
+    spec:
+      containers:
+      - name: marketplace
+        image: marconioni/kiiiproekt:latest
+        env:
+          - name: spring.datasource.url
+            valueFrom:
+              configMapKeyRef:
+                name: marketplace-config
+                key: DATABASE_URL
+          - name: spring.datasource.username
+            valueFrom:
+              configMapKeyRef:
+                name: marketplace-config
+                key: POSTGRES_USERNAME
+          - name: spring.datasource.password
+            valueFrom:
+              secretKeyRef:
+                name: marketplace-secret
+                key: POSTGRES_PASSWORD
+          - name: spring.jpa.show-sql
+            value: "false"
+        ports:
+          - containerPort: 8080
+
