@@ -27,17 +27,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: marconioni/kiiiproekt:latest
-  slackNotification:
-    needs: docker
-    name: Slack Notification
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Slack Notification
-      uses: rtCamp/action-slack-notify@v2
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}  
+          tags: marconioni/kiiiproekt:latest 
 
   discordNotification:
     needs: docker
