@@ -1,0 +1,29 @@
+version: "3"
+services:
+  marketplace-db:
+    image: "postgres"
+    restart: always
+    container_name: "marketplace-db"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+      - POSTGRES_DB=marketplace-db
+    ports:
+      - "54322:5432"
+    volumes:
+      - init:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  marketplace:
+    ports:
+      - "8080:8080"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: marketplace
+    environment:
+      - spring.datasource.url=jdbc:postgresql://marketplace-db:5432/marketplace-db
+      - spring.datasource.password=${DB_PASSWORD:-postgres}
+      - spring.jpa.show-sql=false
+volumes:
+  init:
